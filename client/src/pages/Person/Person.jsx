@@ -63,36 +63,29 @@ const Person = ()=>
   const queryClient = useQueryClient();
 
   const mutation = useMutation(
-    async (following) => {
-      try {
-        if (following) {
-          const response = await makeRequest.delete(`/Connection`, {
-            params: {
-              friend_id: user_id,
-              user_id:currentUser.data.user.user_id
-            }
-          });
-          return response.data; 
-        }
-        else{
-          const response = await makeRequest.post("/Connection",{user_id: currentUser.data.user.user_id,friend_id:user_id} );
-          return response.data; 
-        }
-        
-      } catch (err) {
-        throw err; 
-      }
+    async (formData) => {
+      const response = await makeRequest.post(`/persons/${user_id}/education`, formData);
+      console.log('Mutation response:', response.data);
+      return response.data;
     },
     {
-      onSuccess: () => {
-        // Invalidate and refetch
-        queryClient.invalidateQueries(["Connection"]);
+      onSuccess: (data) => {
+        console.log('Mutation succeeded:', data);
+  
+        // Invalidate and refetch education data
+        queryClient.invalidateQueries(['persons', user_id]);
+  
+        // Close the form and reset it
+        setShowEducationForm(false);
+        reset();
       },
       onError: (err) => {
-        console.log(err);
+        console.error('Mutation error:', err);
       },
     }
   );
+  
+  
   
   const handlefriends= ()=>
   {
@@ -102,19 +95,21 @@ const Person = ()=>
 
     const { handleSubmit, control, reset } = useForm();
 
-  const onSubmitEducation = async (formData) => {
-    try {
-      await makeRequest.post(`/persons/${user_id}/education`, formData);
-
-      queryClient.invalidateQueries(['persons', user_id]);
-
-      // Close the form and reset it
-      setShowEducationForm(false);
-      reset();
-    } catch (err) {
-      console.error(err);
-    }
-  };
+    const onSubmitEducation = async (formData) => {
+      try {
+        await makeRequest.post(`/persons/${user_id}/education`, formData);
+    
+        // Invalidate and refetch education data
+        queryClient.invalidateQueries(['persons', user_id]);
+        
+        // Close the form and reset it
+        setShowEducationForm(false);
+        reset();
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    
   
   const handleDeleteEducation = async (educationId) => {
   try {

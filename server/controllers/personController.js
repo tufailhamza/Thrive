@@ -42,7 +42,7 @@ exports.getPerson = async (req, res, next) => {
     JOIN location L
     ON P.location_id = L.location_id
     WHERE P.user_id = ?`;
-
+console.log("jkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
   const educationQuery = `
     SELECT I.user_id, E.education_id, I.institute_id, I.name,
     U.ProfilePic,
